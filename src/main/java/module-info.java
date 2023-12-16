@@ -1,4 +1,4 @@
-module com.example.introai_group2 {
+module main.mapapplication {
     requires javafx.controls;
     requires javafx.fxml;
 
@@ -6,6 +6,6 @@ module com.example.introai_group2 {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
 
-    opens com.example.introai_group2 to javafx.fxml;
-    exports com.example.introai_group2;
+    opens app to javafx.fxml;
+    exports app;
 }
