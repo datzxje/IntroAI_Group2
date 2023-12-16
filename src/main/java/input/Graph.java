@@ -25,9 +25,9 @@ public class Graph {
         for (int i = 0; i < Constants.ARRAY_SIZE; i++) {
             adjacencyList.add(new Vector<>());
         }
-        String filePathForAdjacencyList = "D:\\MapApplication\\src\\main\\resources\\app\\adjacencList.txt";
+        String filePathForAdjacencyList = "src/main/resources/app/adjacencList.txt";
         readAdjacencyListFromFile(filePathForAdjacencyList);
-        String filePathfromCoordinatesVertex = "D:\\MapApplication\\src\\main\\resources\\app\\Vertices.txt";
+        String filePathfromCoordinatesVertex = "src/main/resources/app/Vertices.txt";
         insertVertexFromFile(filePathfromCoordinatesVertex, vertexList);
         updateDistanceMatrix();
 
