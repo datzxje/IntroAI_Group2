@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleMapClick" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.MapController">
+
+    <children>
+        <BorderPane prefHeight="200.0" prefWidth="200.0">
+            <left>
+                <StackPane>
+                    <!-- Your existing ImageView -->
+                    <ImageView fx:id="mapView" fitHeight="833.0" fitWidth="1058.0" BorderPane.alignment="CENTER">
+                        <image>
+                            <Image url="@../image/map.png" />
+                        </image>
+                    </ImageView>
+
+                    <!-- Pane for the dot -->
+                    <Pane fx:id="dotPane" pickOnBounds="false">
+                        <Line fx:id="routeLine" stroke="BLUE" strokeWidth="2.0" visible="false" />
+                        <ImageView fx:id="startHighlightIcon" fitHeight="20" fitWidth="20" visible="false">
+                            <image>
+                                <Image url="@../image/startIcon.png" />
+                            </image>
+                        </ImageView>
+                        <ImageView fx:id="goalHighlightIcon" fitHeight="20" fitWidth="20" visible="false">
+                            <image>
+                                <Image url="@../image/goalIcon.png" />
+                            </image>
+                        </ImageView>
+                    </Pane>
+                </StackPane>
+            </left>
+            <right>
+                <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <ButtonBar layoutX="-9.0" layoutY="178.0" prefHeight="40.0" prefWidth="195.0">
+                            <buttons>
+                                <Button fx:id="showRouteButton" mnemonicParsing="false" text="Show Route" />
+                                <Button fx:id="hideRouteButton" minWidth="0.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="122.0" text="Hide Route" />
+                            </buttons>
+                        </ButtonBar>
+                        <ImageView fitHeight="29.0" fitWidth="29.0" layoutX="145.0" layoutY="42.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../image/startIcon.png" />
+                            </image>
+                        </ImageView>
+                        <ImageView fitHeight="29.0" fitWidth="29.0" layoutX="145.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../image/goalIcon.png" />
+                            </image>
+                        </ImageView>
+                        <RadioButton fx:id="startPositionRadioButton" layoutX="26.0" layoutY="46.0" mnemonicParsing="false" text="Start Position">
+                            <font>
+                                <Font name="Segoe UI" size="15.0" />
+                            </font>
+                        </RadioButton>
+                        <RadioButton fx:id="goalPositionRadioButton" layoutX="26.0" layoutY="88.0" mnemonicParsing="false" text="Goal Position">
+                            <font>
+                                <Font name="Segoe UI" size="15.0" />
+                            </font>
+                        </RadioButton>
+                        <Button fx:id="deletePointButton" layoutX="62.0" layoutY="128.0" mnemonicParsing="false" text="Delete point" />
+                    </children>
+                </Pane>
+            </right>
+        </BorderPane>
+    </children>
+</StackPane>
