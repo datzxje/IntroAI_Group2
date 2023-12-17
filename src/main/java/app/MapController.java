@@ -1,12 +1,16 @@
 package app;
 
 import algorithm.AStarAlgorithm;
-import algorithm.FindStartEndVertex;
+import algorithm.BidirectionalSearchAlgorithm;
+import algorithm.DijkstraAlgorithm;
 import input.Graph;
 import input.Vertex;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -54,6 +58,7 @@ public class MapController {
     private Vertex startPoint;
     private Vertex endPoint;
     private Set<Integer> generatedIds = new HashSet<>();
+    private String selectedAlgorithm;
     private Graph graph;
     public void setGraph(Graph graph) {
         this.graph = graph;
@@ -113,16 +118,57 @@ public class MapController {
         hideRoute();
 
         if (graph != null) {
-            AStarAlgorithm aStarAlgorithm = new AStarAlgorithm(graph.getDistanceMatrix());
-            List<Vertex> resultPair = findStartAndGoalPair(graph, startPoint, endPoint);
-            List<Integer> pathIndexList = aStarAlgorithm.findShortestPath(resultPair.get(0).getId(), resultPair.get(1).getId());
-            List<Vertex> shortestPath = new ArrayList<>();
-            for (int a: pathIndexList) {
-                shortestPath.add(graph.getVertexList().get(a));
+            selectedAlgorithm = algorithmChoiceBox.getValue();
+            if (selectedAlgorithm != null) {
+                switch (selectedAlgorithm) {
+                    case "A* Algorithm":
+                        performAStarAlgorithm();
+                        break;
+                    case "Bi-directional Search":
+                        performBidirectionalSearch();
+                        break;
+                    case "Dijkstra":
+                        performDijkstraAlgorithm();
+                        break;
+                    // Add more cases for additional algorithms if needed
+                }
             }
-            drawRouteOnMap(shortestPath);
         }
     }
+
+    private void performAStarAlgorithm() {
+        AStarAlgorithm aStarAlgorithm = new AStarAlgorithm(graph.getDistanceMatrix());
+        List<Vertex> resultPair = findStartAndGoalPair(graph, startPoint, endPoint);
+        List<Integer> pathIndexList = aStarAlgorithm.findShortestPath(resultPair.get(0).getId(), resultPair.get(1).getId());
+        List<Vertex> shortestPath = new ArrayList<>();
+        for (int a : pathIndexList) {
+            shortestPath.add(graph.getVertexList().get(a));
+        }
+        drawRouteOnMap(shortestPath);
+    }
+
+    private void performBidirectionalSearch() {
+        BidirectionalSearchAlgorithm bidirectionalSearchAlgorithm = new BidirectionalSearchAlgorithm(graph.getDistanceMatrix());
+        List<Vertex> resultPair = findStartAndGoalPair(graph, startPoint, endPoint);
+        List<Integer> bidirectionalPath = bidirectionalSearchAlgorithm.findShortestPathBidirectional(resultPair.get(0).getId(), resultPair.get(1).getId());
+        List<Vertex> shortestPath = new ArrayList<>();
+        for (int a : bidirectionalPath) {
+            shortestPath.add(graph.getVertexList().get(a));
+        }
+        drawRouteOnMap(shortestPath);
+    }
+
+    private void performDijkstraAlgorithm() {
+        DijkstraAlgorithm dijkstraAlgorithm = new DijkstraAlgorithm(graph.getDistanceMatrix());
+        List<Vertex> resultPair = findStartAndGoalPair(graph, startPoint, endPoint);
+        List<Integer> pathIndexList = dijkstraAlgorithm.findShortestPath(resultPair.get(0).getId(), resultPair.get(1).getId());
+        List<Vertex> shortestPath = new ArrayList<>();
+        for (int a : pathIndexList) {
+            shortestPath.add(graph.getVertexList().get(a));
+        }
+        drawRouteOnMap(shortestPath);
+    }
+
 
     private void drawRouteOnMap(List<Vertex> shortestPath) {
         if (shortestPath != null && shortestPath.size() > 1) {
@@ -147,12 +193,17 @@ public class MapController {
         hideRoute();
     }
 
+    @FXML
+    private ChoiceBox<String> algorithmChoiceBox;
+
     private void hideRoute() {
         dotPane.getChildren().removeIf(node -> node instanceof Line);
     }
 
     @FXML
     private void initialize() {
+        ObservableList<String> choiceList = FXCollections.observableArrayList("A* Algorithm", "Bi-directional Search", "Dijkstra");
+        algorithmChoiceBox.setItems(choiceList);
         startPositionRadioButton.setOnAction(event -> {
             isStartPositionSelected = true;
             goalPositionRadioButton.setSelected(false);

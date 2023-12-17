@@ -10,31 +10,32 @@ public class DijkstraAlgorithm {
     }
 
     public List<Integer> findShortestPath(int start, int goal) {
-        PriorityQueue<DijkstraVertex> priorityQueue = new PriorityQueue<>(Comparator.comparingDouble(v -> v.getDistance()));
-        Set<Integer> visitedSet = new HashSet<>();
-        Map<Integer, Integer> predecessorMap = new HashMap<>();
-        Map<Integer, Double> distanceMap = new HashMap<>();
+        PriorityQueue<DijkstraVertex> openSet = new PriorityQueue<>(Comparator.comparingDouble(v -> v.getDistance()));
+        Set<Integer> closedSet = new HashSet<>();
+        Map<Integer, Integer> cameFrom = new HashMap<>();
+        Map<Integer, Double> gScore = new HashMap<>();
 
-        priorityQueue.add(new DijkstraVertex(start, 0));
+        openSet.add(new DijkstraVertex(start, 0));
+        gScore.put(start, 0.0);
 
-        while (!priorityQueue.isEmpty()) {
-            DijkstraVertex current = priorityQueue.poll();
+        while (!openSet.isEmpty()) {
+            DijkstraVertex current = openSet.poll();
 
             if (current.getId() == goal) {
-                return reconstructPath(predecessorMap, goal);
+                return reconstructPath(cameFrom, goal);
             }
 
-            visitedSet.add(current.getId());
+            closedSet.add(current.getId());
 
             for (int neighbor = 0; neighbor < distanceMatrix.size(); neighbor++) {
                 double cost = distanceMatrix.get(current.getId()).get(neighbor);
-                if (cost > 0 && !visitedSet.contains(neighbor)) {
-                    double tentativeDistance = distanceMap.getOrDefault(current.getId(), Double.POSITIVE_INFINITY) + cost;
+                if (cost > 0 && !closedSet.contains(neighbor)) {
+                    double tentativeGScore = gScore.get(current.getId()) + cost;
 
-                    if (!distanceMap.containsKey(neighbor) || tentativeDistance < distanceMap.get(neighbor)) {
-                        distanceMap.put(neighbor, tentativeDistance);
-                        priorityQueue.add(new DijkstraVertex(neighbor, tentativeDistance));
-                        predecessorMap.put(neighbor, current.getId());
+                    if (!gScore.containsKey(neighbor) || tentativeGScore < gScore.get(neighbor)) {
+                        gScore.put(neighbor, tentativeGScore);
+                        openSet.add(new DijkstraVertex(neighbor, tentativeGScore));
+                        cameFrom.put(neighbor, current.getId());
                     }
                 }
             }
@@ -43,12 +44,12 @@ public class DijkstraAlgorithm {
         return null; // No path found
     }
 
-    private List<Integer> reconstructPath(Map<Integer, Integer> predecessorMap, int current) {
+    private List<Integer> reconstructPath(Map<Integer, Integer> cameFrom, int current) {
         List<Integer> path = new ArrayList<>();
         path.add(current);
 
-        while (predecessorMap.containsKey(current)) {
-            current = predecessorMap.get(current);
+        while (cameFrom.containsKey(current)) {
+            current = cameFrom.get(current);
             path.add(current);
         }
 
