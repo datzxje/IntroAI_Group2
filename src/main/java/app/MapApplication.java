@@ -23,7 +23,6 @@ public class MapApplication extends Application {
 
         // Set the controller for the FXML file
         MapController controller = loader.getController();
-//        scene.setOnMouseClicked(controller::handleMouseClick);
 
         primaryStage.setTitle("Map Application");
         primaryStage.setScene(scene);

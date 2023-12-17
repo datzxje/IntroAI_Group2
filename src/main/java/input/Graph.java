@@ -1,8 +1,5 @@
 package input;
 
-import algorithm.AStarAlgorithm;
-import app.MapController;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,40 +12,41 @@ public class Graph {
     private List<Vertex> vertexList;
     private Vector<Vector<Integer>> adjacencyList;
     private Vector<Vector<Double>> distanceMatrix;
-    private List<Vertex> shortestPath;
-    private List<Integer> pathIndexList;
-
     public Graph() {
         vertexList = new ArrayList<>();
-        shortestPath = new ArrayList<>();
         adjacencyList = new Vector<>(Constants.ARRAY_SIZE);
         for (int i = 0; i < Constants.ARRAY_SIZE; i++) {
             adjacencyList.add(new Vector<>());
         }
-        String filePathForAdjacencyList = "src/main/resources/app/adjacencList.txt";
+        String filePathForAdjacencyList = "D:\\MapApplication\\src\\main\\resources\\app\\adjacencList.txt";
         readAdjacencyListFromFile(filePathForAdjacencyList);
-        String filePathfromCoordinatesVertex = "src/main/resources/app/Vertices.txt";
+        String filePathfromCoordinatesVertex = "D:\\MapApplication\\src\\main\\resources\\app\\Vertices.txt";
         insertVertexFromFile(filePathfromCoordinatesVertex, vertexList);
         updateDistanceMatrix();
-
-        AStarAlgorithm aStarAlgorithm = new AStarAlgorithm(distanceMatrix);
-        int startVertex = 269;
-        int goalVertex = 111;
-
-        pathIndexList = aStarAlgorithm.findShortestPath(startVertex, goalVertex);
-        for (int a: pathIndexList) {
-            shortestPath.add(vertexList.get(a));
-        }
-
-        if (shortestPath != null) {
-            for (int a: pathIndexList) System.out.println("Shortest Path: " + a);
-        } else {
-            System.out.println("No path found.");
-        }
     }
 
-    public List<Vertex> getShortestPath() {
-        return shortestPath;
+    public List<Vertex> getVertexList() {
+        return vertexList;
+    }
+
+    public void setVertexList(List<Vertex> vertexList) {
+        this.vertexList = vertexList;
+    }
+
+    public Vector<Vector<Integer>> getAdjacencyList() {
+        return adjacencyList;
+    }
+
+    public void setAdjacencyList(Vector<Vector<Integer>> adjacencyList) {
+        this.adjacencyList = adjacencyList;
+    }
+
+    public Vector<Vector<Double>> getDistanceMatrix() {
+        return distanceMatrix;
+    }
+
+    public void setDistanceMatrix(Vector<Vector<Double>> distanceMatrix) {
+        this.distanceMatrix = distanceMatrix;
     }
 
     private void readAdjacencyListFromFile(String filePath) {
@@ -127,14 +125,6 @@ public class Graph {
                 }
             }
         }
-    }
-
-    public static void main(String[] args) {
-        Graph graph = new Graph();
-    }
-
-    public void drawPathOnMap(double startIconX, double startIconY, double goalIconX, double goalIconY, MapController mapController) {
-        // Implement drawing logic here
     }
 }
 

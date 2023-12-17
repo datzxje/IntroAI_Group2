@@ -63,30 +63,30 @@ public class AStarAlgorithm {
         // This is a simple heuristic; you may use a more sophisticated one based on your problem
         return distanceMatrix.get(current).get(goal);
     }
-    public double calculateTotalWeight(List<Integer> path) {
-        double totalWeight = 0.0;
+    public double computePathDistance(int start, int goal) {
+        List<Integer> path = findShortestPath(start, goal);
+        if (path == null || path.size() < 2) {
+            // Invalid path or path with less than 2 vertices
+            return 0.0;
+        }
+
+        double totalDistance = 0.0;
 
         for (int i = 0; i < path.size() - 1; i++) {
             int currentVertex = path.get(i);
             int nextVertex = path.get(i + 1);
 
-            totalWeight += distanceMatrix.get(currentVertex).get(nextVertex);
+            double edgeWeight = distanceMatrix.get(currentVertex).get(nextVertex);
+
+            // Assuming a positive edge weight indicates a valid connection
+            if (edgeWeight > 0) {
+                totalDistance += edgeWeight;
+            } else {
+                // Handle invalid or disconnected vertices
+                return 0.0;
+            }
         }
 
-        return totalWeight;
+        return totalDistance;
     }
-    public List<List<Integer>> findShortestPaths(Integer[] startVertices, Integer[] goalVertices) {
-        List<List<Integer>> shortestPaths = new ArrayList<>();
-
-        for (int i = 0; i < Math.min(startVertices.length, goalVertices.length); i++) {
-            int startVertex = startVertices[i];
-            int goalVertex = goalVertices[i];
-
-            List<Integer> shortestPath = findShortestPath(startVertex, goalVertex);
-            shortestPaths.add(shortestPath);
-        }
-
-        return shortestPaths;
-    }
-
 }
