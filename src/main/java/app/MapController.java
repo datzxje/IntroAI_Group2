@@ -1,5 +1,7 @@
 package app;
 
+import algorithm.AStarAlgorithm;
+import algorithm.FindStartEndVertex;
 import input.Graph;
 import input.Vertex;
 import javafx.event.ActionEvent;
@@ -12,7 +14,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import static algorithm.FindStartEndVertex.findStartAndGoalPair;
 
 public class MapController {
     private boolean isStartPositionSelected = false;
@@ -44,6 +51,9 @@ public class MapController {
     private double startIconY;
     private double goalIconX;
     private double goalIconY;
+    private Vertex startPoint;
+    private Vertex endPoint;
+    private Set<Integer> generatedIds = new HashSet<>();
     private Graph graph;
     public void setGraph(Graph graph) {
         this.graph = graph;
@@ -59,14 +69,26 @@ public class MapController {
                 setIconPosition(startHighlightIcon, mouseX, mouseY);
                 startIconX = mouseX;
                 startIconY = mouseY;
+                startPoint = new Vertex(generateRandomId(), mouseX, mouseY);
                 hideRoute();
             } else {
                 setIconPosition(goalHighlightIcon, mouseX, mouseY);
                 goalIconX = mouseX;
                 goalIconY = mouseY;
+                endPoint = new Vertex(generateRandomId(), mouseX, mouseY);
                 hideRoute();
             }
         }
+    }
+
+    private int generateRandomId() {
+        int newId;
+        do {
+            newId = 301 + (int) (Math.random() * 1000);
+        } while (generatedIds.contains(newId));
+
+        generatedIds.add(newId);
+        return newId;
     }
 
     private void setIconPosition(ImageView icon, double x, double y) {
@@ -89,16 +111,15 @@ public class MapController {
     @FXML
     private void handleShowRoute(ActionEvent event) {
         hideRoute();
-//        if (startIconX != 0 && startIconY != 0 && goalIconX != 0 && goalIconY != 0) {
-//            // Draw a line connecting the start and goal points
-//            Line routeLine = new Line(startIconX, startIconY, goalIconX, goalIconY);
-//
-//            // Add the line to your dotPane or another appropriate container
-//            dotPane.getChildren().add(routeLine);
-//        }
 
         if (graph != null) {
-            List<Vertex> shortestPath = graph.getShortestPath();
+            AStarAlgorithm aStarAlgorithm = new AStarAlgorithm(graph.getDistanceMatrix());
+            List<Vertex> resultPair = findStartAndGoalPair(graph, startPoint, endPoint);
+            List<Integer> pathIndexList = aStarAlgorithm.findShortestPath(resultPair.get(0).getId(), resultPair.get(1).getId());
+            List<Vertex> shortestPath = new ArrayList<>();
+            for (int a: pathIndexList) {
+                shortestPath.add(graph.getVertexList().get(a));
+            }
             drawRouteOnMap(shortestPath);
         }
     }
@@ -112,7 +133,7 @@ public class MapController {
 
                 Line routeLine = new Line(startVertex.getX(), startVertex.getY(), endVertex.getX(), endVertex.getY());
 
-                routeLine.setStyle("-fx-stroke: #ff0000; -fx-stroke-width: 4;");
+                routeLine.setStyle("-fx-stroke: #ff0000; -fx-stroke-width: 5;");
 
                 // Add the line to your dotPane or another appropriate container
                 dotPane.getChildren().add(routeLine);
