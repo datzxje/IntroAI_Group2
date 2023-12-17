@@ -119,6 +119,7 @@ public class MapController {
             List<Vertex> shortestPath = new ArrayList<>();
             for (int a: pathIndexList) {
                 shortestPath.add(graph.getVertexList().get(a));
+                System.out.println(a);
             }
             drawRouteOnMap(shortestPath);
         }
